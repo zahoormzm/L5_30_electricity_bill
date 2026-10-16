@@ -103,4 +103,5 @@ def main():
     print("Saved", len(bills), "bills to bills.json")
 
 
-main()
+if __name__ == "__main__":
+    main()
