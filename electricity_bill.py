@@ -92,7 +92,8 @@ def main():
         generate_bill(meter_id, units)
     generate_bill("M4", 50, extras={"late_fee": 25})
     for bill in bills:
-        print(bill["meter"], "used", bill["units"], "units, bill Rs.", bill["amount"])
+        print(bill["meter"], "used", bill["units"],
+              "units, bill Rs.", bill["amount"])
     highest = max(bills, key=lambda bill: bill["amount"])
     print("Highest bill:", highest["meter"])
     print("Average bill:", average_bill())
