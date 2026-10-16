@@ -1,3 +1,5 @@
+"""Calculate slab-based electricity bills and save a demonstration batch."""
+
 import http.client
 import ipaddress
 import json
@@ -16,11 +18,13 @@ bills = []
 
 
 def readMeters(xmlText):
+    """Read meter IDs and integer readings, rejecting DTDs and entities."""
     root = ET.fromstring(xmlText, forbid_dtd=True)
     return [(m.get("id"), int(m.get("prev")), int(m.get("curr")))
             for m in root.findall("meter")]
 
 def calculateUnits(previous, current):
+    """Return consumed units, warning and using zero for reversed readings."""
     if current < previous:
         print("Warning: meter reading went backwards")
         return 0
@@ -28,6 +32,7 @@ def calculateUnits(previous, current):
 
 
 def energyCharge(units):
+    """Apply progressive slab rates and the rate above the final slab."""
     charge = 0
     lower = 0
     remaining = units
@@ -41,6 +46,7 @@ def energyCharge(units):
 
 
 def generateBill(meterId, units, taxRate=0.05, extras={}):
+    """Append and return a bill including fixed charge, extra fees and tax."""
     amount = energyCharge(units) + FIXED_CHARGE + sum(extras.values())
     bill = {"meter" : meterId, "units": units,
             "amount": round(amount * (1 + taxRate), 2)}
@@ -49,17 +55,20 @@ def generateBill(meterId, units, taxRate=0.05, extras={}):
 
 
 def averageBill(currency):
+    """Return the average bill amount, or zero when no bills exist."""
     if not bills:
         return 0
     return round(sum(bill["amount"] for bill in bills) / len(bills), 2)
 
 
 def saveBills(fileName="bills.json"):
+    """Write the current bills as indented JSON."""
     with open(fileName, "w") as f:
         json.dump(bills, f, indent=2)
 
 
 def syncMeter(meterIp):
+    """Return reading text from a literal IP over HTTP, with a timeout."""
     # Helper kept for the lab: not called by the demo
     address = str(ipaddress.ip_address(meterIp))
     connection = http.client.HTTPConnection(address, timeout=5)
@@ -74,6 +83,7 @@ def syncMeter(meterIp):
 
 
 def main():
+    """Run the sample readings, print a summary and save the bills."""
     for meterId, previous, current in readMeters(METER_XML):
         units = calculateUnits(previous, current)
         generateBill(meterId, units)
