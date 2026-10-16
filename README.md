@@ -1,55 +1,72 @@
-# Lab 5: Static Code Analysis — Electricity Bill Calculator
+# Lab 5: Static Code Analysis - Electricity Bill Calculator
 
-**Your file:** `electricity_bill.py`
+**SRN:** PES1UG24CS579
 
-Follow the lab handout for the full instructions.
+**Date:** 16 October 2026
 
-## About the program
+**Assigned repository:** [SETAPESU26/L5_30_electricity_bill](https://github.com/SETAPESU26/L5_30_electricity_bill)
 
-A slab-based billing tool. It reads meter readings from a small XML block, works out units used, applies the tariff slabs, fixed charge, tax and any extra fees, and saves the bills to bills.json.
+**Original commit:** `a48c8e9fe56e72e1d809174a23ec2e96a67dd48e`
 
-The code works, but only just. It has quality, style and security problems of the kind Pylint, Flake8 and Bandit are built to find.
+The program reads sample meter readings from XML, calculates progressive
+tariff charges, adds a fixed charge, tax and optional fees, and saves the
+result to `bills.json`.
 
-## What to do
+## Results
 
-1. **Run it first** and read the output carefully:
+| Tool | Before | After |
+| --- | --- | --- |
+| Pylint | 5.44/10 | 10.00/10 |
+| Bandit | 4 findings (1 High, 1 Medium, 2 Low) | 0 findings |
+| Flake8 | 4 findings | 0 findings |
 
-   ```
-   python electricity_bill.py
-   ```
+All 15 regression tests pass. The original demonstration output and saved
+bills are unchanged. Each distinct fix has a separate commit; the issue
+table lists the corresponding hashes. Baseline evidence and final submission
+materials have their own documentation/test commits.
 
-   It runs a short demonstration and needs no input. Note what it prints, so you can check that it still behaves the same after your fixes.
+## Setup and run
 
-2. **Install the tools:**
+Verified with Python 3.12.14. From this repository:
 
-   ```
-   python -m pip install pylint bandit flake8
-   ```
+```bash
+python3 -m venv venv
+source venv/bin/activate
+python -m pip install -r requirements.txt
+python electricity_bill.py
+python -m unittest -v
+```
 
-3. **Run the analysis and save the reports:**
+`defusedxml` is the runtime dependency. Pylint, Bandit and Flake8 are the lab
+analysis tools. Exact installed dependency versions are recorded in
+`reports/environment.txt`.
 
-   ```
-   python -m pylint electricity_bill.py > pylint_report.txt
-   python -m bandit -r electricity_bill.py > bandit_report.txt
-   python -m flake8 electricity_bill.py > flake8_report.txt
-   ```
+## Reproduce the final analysis
 
-4. **Document the issues** in `issues.md` using this table (at least 4 rows, high and medium severity first):
+```bash
+python -m pylint --persistent=n electricity_bill.py > reports/after/pylint_report.txt 2>&1
+python -m bandit -r electricity_bill.py > reports/after/bandit_report.txt 2>&1
+python -m flake8 electricity_bill.py > reports/after/flake8_report.txt 2>&1
+```
 
-   | Issue | Type | Line(s) | Description | Fix Approach |
-   |-------|------|---------|-------------|--------------|
-   | ...   | ...  | ...     | ...         | ...          |
-
-5. **Fix the code.** Fix at least 4 of the issues you documented, then rerun all three tools to confirm they are gone. Repeat until you are satisfied. The program should still do its job when you are done.
-
-6. **Reflect.** Answer the four reflection questions from the handout in `reflection.md`.
+Each command returns zero on the submitted file. Flake8 produces an empty
+report when no violations are found. No warnings are suppressed. Preserve
+the existing `reports/before` files: they record the unmodified program.
 
 ## Deliverables
 
-- `electricity_bill.py`: your cleaned version, with at least 4 issues fixed.
-- `issues.md`: the completed issue table.
-- `reflection.md`: your answers to the reflection questions.
+- [Cleaned program](electricity_bill.py)
+- [Issue table with original line numbers and fix commits](issues.md)
+- [Reflection draft](reflection.md)
+- [Before reports and demo outputs](reports/before)
+- [After reports, demo outputs and test results](reports/after)
+- [Regression tests](test_electricity_bill.py)
 
-**Target:** aim for a Pylint score above 9.5 on your final file. A perfect 10.00/10 is very good.
+The handout's required minimum of four fixes, Pylint score above 9.5,
+resolution of all Bandit findings, and clean Flake8 output are met. The
+instructor's exact reflection questions are absent from the supplied
+handout; the four reflection sections are explicitly provisional.
 
-Be ready to explain the bugs you found and how you fixed them. You may be called on to present.
+The original assignment README remains available in the initial Git commit.
+Meter synchronisation is checked with mocked HTTP responses, not a live
+device. The supplied sample remains an educational billing demonstration.
