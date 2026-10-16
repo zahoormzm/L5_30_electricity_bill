@@ -45,8 +45,10 @@ def energy_charge(units):
     return charge + remaining * HIGH_RATE
 
 
-def generate_bill(meter_id, units, tax_rate=0.05, extras={}):
+def generate_bill(meter_id, units, tax_rate=0.05, extras=None):
     """Append and return a bill including fixed charge, extra fees and tax."""
+    if extras is None:
+        extras = {}
     amount = energy_charge(units) + FIXED_CHARGE + sum(extras.values())
     bill = {"meter" : meter_id, "units": units,
             "amount": round(amount * (1 + tax_rate), 2)}
