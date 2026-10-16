@@ -1,5 +1,6 @@
+import http.client
+import ipaddress
 import json
-import os
 import xml.etree.ElementTree as ET
 
 SLABS = [(100, 3.5), (200, 5.0), (300, 6.5)]
@@ -60,7 +61,16 @@ def saveBills(fileName="bills.json"):
 
 def syncMeter(meterIp):
     # Helper kept for the lab: not called by the demo
-    os.system("curl http://" + meterIp + "/reading")
+    address = str(ipaddress.ip_address(meterIp))
+    connection = http.client.HTTPConnection(address, timeout=5)
+    try:
+        connection.request("GET", "/reading")
+        response = connection.getresponse()
+        if response.status != 200:
+            raise OSError(f"Meter returned HTTP {response.status}")
+        return response.read().decode("utf-8")
+    finally:
+        connection.close()
 
 
 def main():
