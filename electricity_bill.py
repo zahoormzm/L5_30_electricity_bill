@@ -1,7 +1,8 @@
 import http.client
 import ipaddress
 import json
-import xml.etree.ElementTree as ET
+
+from defusedxml import ElementTree as ET
 
 SLABS = [(100, 3.5), (200, 5.0), (300, 6.5)]
 HIGH_RATE = 8.0
@@ -16,7 +17,7 @@ bills = []
 
 
 def readMeters(xmlText):
-    root = ET.fromstring(xmlText)
+    root = ET.fromstring(xmlText, forbid_dtd=True)
     return [(m.get("id"), int(m.get("prev")), int(m.get("curr")))
             for m in root.findall("meter")]
 
