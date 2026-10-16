@@ -17,13 +17,13 @@ METER_XML = ("<meters>"
 bills = []
 
 
-def readMeters(xmlText):
+def read_meters(xml_text):
     """Read meter IDs and integer readings, rejecting DTDs and entities."""
-    root = ET.fromstring(xmlText, forbid_dtd=True)
+    root = ET.fromstring(xml_text, forbid_dtd=True)
     return [(m.get("id"), int(m.get("prev")), int(m.get("curr")))
             for m in root.findall("meter")]
 
-def calculateUnits(previous, current):
+def calculate_units(previous, current):
     """Return consumed units, warning and using zero for reversed readings."""
     if current < previous:
         print("Warning: meter reading went backwards")
@@ -31,46 +31,46 @@ def calculateUnits(previous, current):
     return current - previous
 
 
-def energyCharge(units):
+def energy_charge(units):
     """Apply progressive slab rates and the rate above the final slab."""
     charge = 0
     lower = 0
     remaining = units
     for limit, rate in SLABS:
-        slabUnits = min(remaining, limit - lower)
-        if slabUnits > 0:
-            charge += slabUnits * rate
-            remaining -= slabUnits
+        slab_units = min(remaining, limit - lower)
+        if slab_units > 0:
+            charge += slab_units * rate
+            remaining -= slab_units
         lower = limit
     return charge + remaining * HIGH_RATE
 
 
-def generateBill(meterId, units, taxRate=0.05, extras={}):
+def generate_bill(meter_id, units, tax_rate=0.05, extras={}):
     """Append and return a bill including fixed charge, extra fees and tax."""
-    amount = energyCharge(units) + FIXED_CHARGE + sum(extras.values())
-    bill = {"meter" : meterId, "units": units,
-            "amount": round(amount * (1 + taxRate), 2)}
+    amount = energy_charge(units) + FIXED_CHARGE + sum(extras.values())
+    bill = {"meter" : meter_id, "units": units,
+            "amount": round(amount * (1 + tax_rate), 2)}
     bills.append(bill)
     return bill
 
 
-def averageBill(currency):
+def average_bill(currency):
     """Return the average bill amount, or zero when no bills exist."""
     if not bills:
         return 0
     return round(sum(bill["amount"] for bill in bills) / len(bills), 2)
 
 
-def saveBills(fileName="bills.json"):
+def save_bills(file_name="bills.json"):
     """Write the current bills as indented JSON."""
-    with open(fileName, "w") as f:
+    with open(file_name, "w") as f:
         json.dump(bills, f, indent=2)
 
 
-def syncMeter(meterIp):
+def sync_meter(meter_ip):
     """Return reading text from a literal IP over HTTP, with a timeout."""
     # Helper kept for the lab: not called by the demo
-    address = str(ipaddress.ip_address(meterIp))
+    address = str(ipaddress.ip_address(meter_ip))
     connection = http.client.HTTPConnection(address, timeout=5)
     try:
         connection.request("GET", "/reading")
@@ -84,18 +84,18 @@ def syncMeter(meterIp):
 
 def main():
     """Run the sample readings, print a summary and save the bills."""
-    for meterId, previous, current in readMeters(METER_XML):
-        units = calculateUnits(previous, current)
-        generateBill(meterId, units)
-    generateBill("M4", 50, extras={"late_fee": 25})
+    for meter_id, previous, current in read_meters(METER_XML):
+        units = calculate_units(previous, current)
+        generate_bill(meter_id, units)
+    generate_bill("M4", 50, extras={"late_fee": 25})
     for bill in bills:
         print(bill["meter"], "used", bill["units"], "units, bill Rs.", bill["amount"])
     highest = max(bills, key=lambda bill: bill["amount"])
     print("Highest bill:", highest["meter"])
-    print("Average bill:", averageBill("INR"))
+    print("Average bill:", average_bill("INR"))
     total=sum(bill["amount"] for bill in bills)
     print("Total billed:", round(total, 2))
-    saveBills()
+    save_bills()
     print("Saved", len(bills), "bills to bills.json")
 
 
