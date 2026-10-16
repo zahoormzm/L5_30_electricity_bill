@@ -51,7 +51,7 @@ def generate_bill(meter_id, units, tax_rate=0.05, extras=None):
     if extras is None:
         extras = {}
     amount = energy_charge(units) + FIXED_CHARGE + sum(extras.values())
-    bill = {"meter" : meter_id, "units": units,
+    bill = {"meter": meter_id, "units": units,
             "amount": round(amount * (1 + tax_rate), 2)}
     bills.append(bill)
     return bill
