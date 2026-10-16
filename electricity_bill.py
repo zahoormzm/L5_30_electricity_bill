@@ -56,7 +56,7 @@ def generate_bill(meter_id, units, tax_rate=0.05, extras=None):
     return bill
 
 
-def average_bill(currency):
+def average_bill():
     """Return the average bill amount, or zero when no bills exist."""
     if not bills:
         return 0
@@ -94,7 +94,7 @@ def main():
         print(bill["meter"], "used", bill["units"], "units, bill Rs.", bill["amount"])
     highest = max(bills, key=lambda bill: bill["amount"])
     print("Highest bill:", highest["meter"])
-    print("Average bill:", average_bill("INR"))
+    print("Average bill:", average_bill())
     total=sum(bill["amount"] for bill in bills)
     print("Total billed:", round(total, 2))
     save_bills()
