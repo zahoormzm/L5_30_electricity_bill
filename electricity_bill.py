@@ -65,7 +65,7 @@ def average_bill():
 
 def save_bills(file_name="bills.json"):
     """Write the current bills as indented JSON."""
-    with open(file_name, "w") as f:
+    with open(file_name, "w", encoding="utf-8") as f:
         json.dump(bills, f, indent=2)
 
 
