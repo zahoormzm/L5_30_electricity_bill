@@ -20,10 +20,7 @@ result to `bills.json`.
 | Bandit | 4 findings (1 High, 1 Medium, 2 Low) | 0 findings |
 | Flake8 | 4 findings | 0 findings |
 
-All 15 regression tests pass. The original demonstration output and saved
-bills are unchanged. Each distinct fix has a separate commit; the issue
-table lists the corresponding hashes. Baseline evidence and final submission
-materials have their own documentation/test commits.
+Each fix has a separate commit, listed in the issue table.
 
 ## Setup and run
 
@@ -34,39 +31,29 @@ python3 -m venv venv
 source venv/bin/activate
 python -m pip install -r requirements.txt
 python electricity_bill.py
-python -m unittest -v
 ```
 
 `defusedxml` is the runtime dependency. Pylint, Bandit and Flake8 are the lab
-analysis tools. Exact installed dependency versions are recorded in
-`reports/environment.txt`.
+analysis tools.
 
 ## Reproduce the final analysis
 
 ```bash
-python -m pylint --persistent=n electricity_bill.py > reports/after/pylint_report.txt 2>&1
-python -m bandit -r electricity_bill.py > reports/after/bandit_report.txt 2>&1
-python -m flake8 electricity_bill.py > reports/after/flake8_report.txt 2>&1
+python -m pylint --persistent=n electricity_bill.py
+python -m bandit -r electricity_bill.py
+python -m flake8 electricity_bill.py
 ```
 
-Each command returns zero on the submitted file. Flake8 produces an empty
-report when no violations are found. No warnings are suppressed. Preserve
-the existing `reports/before` files: they record the unmodified program.
+Flake8 produces no output when no violations are found.
 
 ## Deliverables
 
 - [Cleaned program](electricity_bill.py)
 - [Issue table with original line numbers and fix commits](issues.md)
 - [Reflection draft](reflection.md)
-- [Before reports and demo outputs](reports/before)
-- [After reports, demo outputs and test results](reports/after)
-- [Regression tests](test_electricity_bill.py)
+- [Before/after reports in the lab repository](https://github.com/zahoormzm/SE-Labs-PES1UG24CS579/tree/main/Lab5/reports)
 
 The handout's required minimum of four fixes, Pylint score above 9.5,
 resolution of all Bandit findings, and clean Flake8 output are met. The
 instructor's exact reflection questions are absent from the supplied
 handout; the four reflection sections are explicitly provisional.
-
-The original assignment README remains available in the initial Git commit.
-Meter synchronisation is checked with mocked HTTP responses, not a live
-device. The supplied sample remains an educational billing demonstration.
