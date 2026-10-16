@@ -12,7 +12,6 @@ METER_XML = ("<meters>"
              "<meter id='M2' prev='5000' curr='5420'/>"
              "<meter id='M3' prev='800' curr='760'/>"
              "</meters>")
-CLERK_PASSWORD = "bill-desk-demo"
 bills = []
 
 
