@@ -97,7 +97,7 @@ def main():
     highest = max(bills, key=lambda bill: bill["amount"])
     print("Highest bill:", highest["meter"])
     print("Average bill:", average_bill())
-    total=sum(bill["amount"] for bill in bills)
+    total = sum(bill["amount"] for bill in bills)
     print("Total billed:", round(total, 2))
     save_bills()
     print("Saved", len(bills), "bills to bills.json")
