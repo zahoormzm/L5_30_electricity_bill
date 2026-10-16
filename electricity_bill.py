@@ -23,6 +23,7 @@ def read_meters(xml_text):
     return [(m.get("id"), int(m.get("prev")), int(m.get("curr")))
             for m in root.findall("meter")]
 
+
 def calculate_units(previous, current):
     """Return consumed units, warning and using zero for reversed readings."""
     if current < previous:
